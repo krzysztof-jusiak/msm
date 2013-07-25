@@ -17,6 +17,7 @@
 #include <boost/mpl/count_if.hpp>
 
 #include <boost/typeof/typeof.hpp>
+#include <boost/type_traits/is_base_of.hpp>
 
 #include <boost/msm/back/common_types.hpp>
 #include <boost/msm/row_tags.hpp>
@@ -73,7 +74,13 @@ namespace boost { namespace msm { namespace front
             return get_functor_return_value<Action>::value;
         }
         template <class EVT,class FSM,class SourceState,class TargetState,class AllStates>
-        static bool guard_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt,AllStates&)
+        static bool guard_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt,AllStates&, typename boost::enable_if<boost::is_base_of<Guard, typename FSM::actions> >::type* = 0)
+        {
+            return fsm.m_actions.template get<Guard>()(evt);
+        }
+
+        template <class EVT,class FSM,class SourceState,class TargetState,class AllStates>
+        static bool guard_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt,AllStates&, typename boost::disable_if<boost::is_base_of<Guard, typename FSM::actions> >::type* = 0)
         {
             // create functor, call it
             return Guard()(evt,fsm,src,tgt);
@@ -316,7 +323,8 @@ namespace boost { namespace msm { namespace front
         template <class FCT>
         void operator()(::boost::msm::wrap<FCT> const& )
         {
-            FCT()(evt_,fsm_,src_,tgt_);
+            fsm_.m_actions.template get<FCT>()(evt_);
+            //FCT()(evt_,fsm_,src_,tgt_);
         }
         private:
             EVT const & evt_;
