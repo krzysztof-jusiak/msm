@@ -14,12 +14,6 @@ namespace di   = boost::di;
 
 struct play : msm::front::euml::euml_event<play> {};
 
-struct Empty : msm::front::state<>, msm::front::euml::euml_state<Empty>
-{ };
-
-struct Stopped : msm::front::state<>, msm::front::euml::euml_state<Stopped>
-{ };
-
 template<int V>
 struct action : public euml::euml_action<action<V>>
 {
@@ -55,8 +49,12 @@ public:
     int i = 0;
 };
 
-struct player_ : public msm::front::state_machine_def<player_>
+class player_ : public msm::front::state_machine_def<player_>
 {
+    struct Empty   : msm::front::state<>, msm::front::euml::euml_state<Empty> { };
+    struct Stopped : msm::front::state<>, msm::front::euml::euml_state<Stopped> { };
+
+public:
     typedef Empty initial_state;
 
     BOOST_MSM_EUML_DECLARE_TRANSITION_TABLE((
@@ -67,7 +65,7 @@ struct player_ : public msm::front::state_machine_def<player_>
 
 typedef msm::back::state_machine<player_> player;
 
-int main(int argc, const char *argv[])
+int main()
 {
     std::cout << boost::units::detail::demangle(typeid(player::actions_t::type).name()) << std::endl;
 
