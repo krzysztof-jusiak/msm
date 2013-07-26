@@ -15,7 +15,7 @@ namespace di   = boost::di;
 struct play : msm::front::euml::euml_event<play> {};
 
 template<int V>
-struct action : public euml::euml_action<action<V>>
+class action : public euml::euml_action<action<V>>
 {
 public:
     BOOST_DI_CTOR(action, int i = 0)
@@ -32,7 +32,7 @@ public:
 };
 
 template<int V>
-struct guard : public euml::euml_action<guard<V>>
+class guard : public euml::euml_action<guard<V>>
 {
 public:
     BOOST_DI_CTOR(guard, int i = 0)
@@ -49,16 +49,45 @@ public:
     int i = 0;
 };
 
+class c
+{
+public:
+    bool check() {
+        return true;
+    }
+};
+
+template<typename T/*, bool(T::*ptr)()*/>
+class bind_guard : public euml::euml_action<bind_guard<T/*, ptr*/>>
+{
+public:
+    BOOST_DI_CTOR(bind_guard, T obj = T())
+        : obj_(obj)
+    { }
+
+    template<typename Event>
+    bool operator()(const Event&) {
+        //return (*obj_.*ptr)();
+        return true;
+    }
+
+private:
+    T obj_;
+};
+
 class player_ : public msm::front::state_machine_def<player_>
 {
     struct Empty   : msm::front::state<>, msm::front::euml::euml_state<Empty> { };
     struct Stopped : msm::front::state<>, msm::front::euml::euml_state<Stopped> { };
+
+    typedef bind_guard<c/*, &c::check*/> c_guard;
 
 public:
     typedef Empty initial_state;
 
     BOOST_MSM_EUML_DECLARE_TRANSITION_TABLE((
         Empty() + play() [guard<1>()] / action<1>() == Stopped()
+      , Empty() + play() [not c_guard()] / (action<1>(), action<2>()) == Stopped()
       , Empty() + play() [guard<1>() and  guard<2>()] / (action<1>(), action<2>(), action<3>()) == Stopped()
     ), transition_table)
 };
