@@ -77,7 +77,7 @@
         pool() { }
 
         #define BOOST_DI_CTOR_INITLIST_IMPL(_, n, na)                           \
-            BOOST_PP_COMMA_IF(n) Args##n::type(args##n)
+            BOOST_PP_COMMA_IF(n) Args##n::element_type(args##n)
 
         #define BOOST_DI_CTOR_TRAITS_IMPL(_, n, TSeq)                             \
             BOOST_PP_COMMA_IF(n) typename mpl::at_c<TSeq, n>::type p##n
