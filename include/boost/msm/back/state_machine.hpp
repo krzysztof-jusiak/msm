@@ -565,6 +565,8 @@ private:
         //typedef typename ROW::Source T1;
         typedef typename make_entry<typename ROW::Source,library_sm>::type T1;
         typedef typename make_exit<typename ROW::Target,library_sm>::type T2;
+        typedef typename ROW::Action Action;
+        typedef typename ROW::Guard Guard;
         typedef typename ROW::Evt transition_event;
         // if the source is an exit pseudo state, then
         // current_state_type becomes the result of get_owner
@@ -689,6 +691,8 @@ private:
     {
         typedef typename make_entry<typename ROW::Source,library_sm>::type T1;
         typedef typename make_exit<typename ROW::Target,library_sm>::type T2;
+        typedef typename ROW::Action Action;
+        typedef typename ROW::Guard Guard;
         typedef typename ROW::Evt transition_event;
         typedef typename ROW::Source current_state_type;
         typedef T2 next_state_type;
@@ -1207,16 +1211,6 @@ private:
         : sequence<T>
     { };
 
-    template<class Sequence>
-    struct flatten
-        : mpl::fold
-          <
-            Sequence,
-            mpl::vector0<>,
-            mpl::copy<get_seq<mpl::_2>, mpl::back_inserter<mpl::_1> >
-        >
-    { };
-
     template<typename Sequence>
     struct unique
         : mpl::fold<
@@ -1230,26 +1224,55 @@ private:
         >
     { };
 
-
-    struct actions_t
+    template<class Sequence>
+    struct flatten
         : unique<
-            typename flatten<
-           typename mpl::fold<
-              stt
-            , mpl::vector0<>
-            , mpl::push_back<
-                mpl::push_back<
-                    mpl::_1
-                  , action<mpl::_2>
-                >
-              , guard<mpl::_2>
-              >
-          >::type
-          >::type
+            typename mpl::fold
+              <
+                Sequence,
+                mpl::vector0<>,
+                mpl::copy<get_seq<mpl::_2>, mpl::back_inserter<mpl::_1> >
+            >::type
           >::type
     { };
 
-    typedef pool<typename actions_t::type> actions;
+    template<typename Seq>
+    struct has_seqs
+        : mpl::count_if<Seq, has_sequence<mpl::_> >::type
+    { };
+
+    template<typename Seq>
+    struct actions_t
+        : flatten<
+               typename mpl::fold<
+                  Seq
+                , mpl::vector0<>
+                , mpl::push_back<
+                    mpl::push_back<
+                        mpl::_1
+                      , action<mpl::_2>
+                    >
+                  , guard<mpl::_2>
+                  >
+              >::type
+          >::type
+    { };
+
+    template<typename Seq, typename = void>
+    struct rec_actions
+        : Seq
+    { };
+
+    template<typename Seq>
+    struct rec_actions<
+        Seq
+      , typename boost::enable_if<has_seqs<Seq> >::type
+    >
+        : rec_actions<typename flatten<Seq>::type>::type
+    { };
+
+    typedef rec_actions<typename actions_t<stt>::type> all_actions_t;
+    typedef pool<typename all_actions_t::type> actions;
 
     // extends the transition table with rows from composite states
     template <class Composite>

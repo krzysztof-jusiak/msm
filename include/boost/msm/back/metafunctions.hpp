@@ -338,12 +338,14 @@ template< typename T1 >
 struct not_a_row
 {
     typedef int not_real_row_tag;
-    struct dummy_event 
-    {
-    };
+    struct dummy_event { };
+    struct dummy_action { };
+    struct dummy_guard { };
     typedef T1                  current_state_type;
     typedef T1                  next_state_type;
     typedef dummy_event         transition_event;
+    typedef dummy_action        Action;
+    typedef dummy_guard         Guard;
 };
 
 // metafunctions used to find out if a state is entry, exit or something else

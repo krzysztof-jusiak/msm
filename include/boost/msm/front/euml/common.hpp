@@ -984,6 +984,12 @@ struct True_ : euml::euml_action<True_>
     {
         return true;
     }
+
+    template <class Event>
+    bool operator()(Event const&)
+    {
+        return true;
+    }
 };
 True_ const true_ = True_();
 
@@ -1011,6 +1017,12 @@ struct False_ : euml::euml_action<False_>
     }
     template <class Event,class FSM,class STATE>
     bool operator()(Event const&,FSM&,STATE& )
+    {
+        return false;
+    }
+
+    template <class Event>
+    bool operator()(Event const&)
     {
         return false;
     }
