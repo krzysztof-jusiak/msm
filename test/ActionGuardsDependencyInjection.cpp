@@ -6,6 +6,7 @@
 #include <boost/msm/front/state_machine_def.hpp>
 #include <boost/msm/front/euml/euml.hpp>
 #include <boost/units/detail/utility.hpp>
+#include <boost/none_t.hpp>
 
 namespace euml = boost::msm::front::euml;
 namespace front = boost::msm::front;
@@ -35,7 +36,9 @@ template<typename T>
 class action : public euml::euml_action<T>
 {
 public:
-    BOOST_DI_CTOR(action, int = 0, boost::shared_ptr<board> b = boost::shared_ptr<board>())
+    action() { }
+
+    BOOST_DI_CTOR(action, boost::shared_ptr<board> b, boost::none_t)
         : board_(b)
     {
         std::cout << typeid(T).name() << ": "  << (b.get()) << std::endl;
