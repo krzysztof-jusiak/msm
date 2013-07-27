@@ -74,7 +74,7 @@ namespace boost { namespace msm { namespace front
             return get_functor_return_value<Action>::value;
         }
         template <class EVT,class FSM,class SourceState,class TargetState,class AllStates>
-        static bool guard_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt,AllStates&, typename boost::enable_if<boost::is_base_of<Guard, typename FSM::actions> >::type* = 0)
+        static bool guard_call(FSM& fsm,EVT const& evt,SourceState&,TargetState&,AllStates&, typename boost::enable_if<boost::is_base_of<Guard, typename FSM::actions> >::type* = 0)
         {
             return fsm.m_actions.template get<Guard>()(evt);
         }

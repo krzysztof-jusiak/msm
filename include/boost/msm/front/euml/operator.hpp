@@ -90,7 +90,7 @@ struct Not_ : euml_action<Not_<T1> >
     typedef mpl::vector1<T1> sequence;
 
     template <class EVT,class FSM,class SourceState,class TargetState>
-    bool operator()(EVT const& evt, FSM& fsm,SourceState& src,TargetState& tgt,
+    bool operator()(EVT const& evt, FSM& fsm,SourceState&,TargetState&,
         typename boost::enable_if<boost::is_base_of<T1, typename FSM::actions> >::type* = 0)
     {
         return !fsm.m_actions.template get<T1>()(evt);
