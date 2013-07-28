@@ -493,6 +493,8 @@ private:
         typedef typename make_entry<typename ROW::Source,library_sm>::type T1;
         typedef typename make_exit<typename ROW::Target,library_sm>::type T2;
         typedef typename ROW::Evt transition_event;
+        typedef typename ROW::Action Action;
+        typedef typename ROW::Guard Guard;
         // if the source is an exit pseudo state, then
         // current_state_type becomes the result of get_owner
         // meaning the containing SM from which the exit occurs
@@ -634,6 +636,8 @@ private:
         typedef typename make_entry<typename ROW::Source,library_sm>::type T1;
         typedef typename make_exit<typename ROW::Target,library_sm>::type T2;
         typedef typename ROW::Evt transition_event;
+        typedef typename ROW::Action Action;
+        typedef typename ROW::Guard Guard;
         // if the source is an exit pseudo state, then
         // current_state_type becomes the result of get_owner
         // meaning the containing SM from which the exit occurs
@@ -738,6 +742,8 @@ private:
         typedef typename make_exit<typename ROW::Target,library_sm>::type T2;
         typedef typename ROW::Evt transition_event;
         typedef typename ROW::Source current_state_type;
+        typedef typename ROW::Action Action;
+        typedef typename ROW::Guard Guard;
         typedef T2 next_state_type;
 
         // if a guard condition is defined, call it to check that the event is accepted
@@ -775,6 +781,8 @@ private:
 
         typedef typename ROW::Evt transition_event;
         typedef typename ROW::Source current_state_type;
+        typedef typename ROW::Action Action;
+        typedef typename ROW::Guard Guard;
         typedef T2 next_state_type;
 
         // Take the transition action and return the next state.
@@ -802,6 +810,8 @@ private:
         typedef typename make_exit<typename ROW::Target,library_sm>::type T2;
         typedef typename ROW::Evt transition_event;
         typedef typename ROW::Source current_state_type;
+        typedef typename ROW::Action Action;
+        typedef typename ROW::Guard Guard;
         typedef T2 next_state_type;
 
         // Take the transition action and return the next state.
@@ -822,6 +832,8 @@ private:
         typedef StateType current_state_type;
         typedef StateType next_state_type;
         typedef typename ROW::Evt transition_event;
+        typedef typename ROW::Action Action;
+        typedef typename ROW::Guard Guard;
 
         // if a guard condition is here, call it to check that the event is accepted
         static bool check_guard(library_sm& fsm,transition_event const& evt)
@@ -858,6 +870,8 @@ private:
         typedef library_sm current_state_type;
         typedef library_sm next_state_type;
         typedef typename ROW::Evt transition_event;
+        typedef typename ROW::Action Action;
+        typedef typename ROW::Guard Guard;
 
         // if a guard condition is here, call it to check that the event is accepted
         static bool check_guard(library_sm& fsm,transition_event const& evt)
@@ -896,6 +910,8 @@ private:
         typedef StateType current_state_type;
         typedef StateType next_state_type;
         typedef typename ROW::Evt transition_event;
+        typedef typename ROW::Action Action;
+        typedef typename ROW::Guard Guard;
 
         // Take the transition action and return the next state.
         static HandledEnum execute(library_sm& fsm, int, int, transition_event const& evt)
@@ -916,6 +932,8 @@ private:
         typedef library_sm current_state_type;
         typedef library_sm next_state_type;
         typedef typename ROW::Evt transition_event;
+        typedef typename ROW::Action Action;
+        typedef typename ROW::Guard Guard;
 
         // Take the transition action and return the next state.
         static HandledEnum execute(library_sm& fsm, int, int, transition_event const& evt)
@@ -937,6 +955,8 @@ private:
         typedef StateType current_state_type;
         typedef StateType next_state_type;
         typedef typename ROW::Evt transition_event;
+        typedef typename ROW::Action Action;
+        typedef typename ROW::Guard Guard;
 
         // if a guard condition is here, call it to check that the event is accepted
         static bool check_guard(library_sm& fsm,transition_event const& evt)
@@ -967,6 +987,8 @@ private:
         typedef library_sm current_state_type;
         typedef library_sm next_state_type;
         typedef typename ROW::Evt transition_event;
+        typedef typename ROW::Action Action;
+        typedef typename ROW::Guard Guard;
 
         // if a guard condition is here, call it to check that the event is accepted
         static bool check_guard(library_sm& fsm,transition_event const& evt)
@@ -998,6 +1020,8 @@ private:
         typedef StateType current_state_type;
         typedef StateType next_state_type;
         typedef typename ROW::Evt transition_event;
+        typedef typename ROW::Action Action;
+        typedef typename ROW::Guard Guard;
         static HandledEnum execute(library_sm& , int , int , transition_event const& )
         {
             return HANDLED_TRUE;
@@ -1011,6 +1035,8 @@ private:
         typedef library_sm current_state_type;
         typedef library_sm next_state_type;
         typedef typename ROW::Evt transition_event;
+        typedef typename ROW::Action Action;
+        typedef typename ROW::Guard Guard;
         static HandledEnum execute(library_sm& , int , int , transition_event const& )
         {
             return HANDLED_TRUE;
