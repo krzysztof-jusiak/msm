@@ -1,59 +1,129 @@
-**Boost Meta State Machine** 
+**Boost Meta State Machine fork**
 
 ### Features
  + actions/guards injection using ctor
  + dispatcher for non typed events
 
-### Example
+### Injection: basic example
 ```cpp
 
-class dependency { ... };
+struct event : euml_event<event> { };
 
-BOOST_MSM_EUML_ACTION(guard)
+class guard : public euml_action<guard>
 {
-    BOOST_DI_CTOR(guard, boost::shared_ptr<dependency> d)
-        : dependency_(d)
+    explicit guard(shared_ptr<int> dep)
+        : dep(dep)
     { }
 
     template<typename Event>
-    bool operator()(const Event&) {
-        return dependency_.check();
+    bool operator()(const Event&) const {
+        return *dep != 0;
     }
 
 private:
-    boost::shared_ptr<dependency> dependency_;
-}; 
+    shared_ptr<int> dep;
+};
 
-BOOST_MSM_EUML_ACTION(action)
+class action : public euml_action<action>
 {
-    BOOST_DI_CTOR(guard, boost::shared_ptr<dependency> d)
-        : dependency_(d)
+    explicit action(shared_ptr<int> dep)
+        : dep(dep)
     { }
 
     template<typename Event>
     void operator()(const Event&) {
-        dependency_.set();
+        (*dep)++;
     }
 
 private:
-    boost::shared_ptr<dependency> dependency_;
-}; 
+    shared_ptr<int> dep;
+};
+```
 
-struct player_ : msm::front::state_machine_def<player_>
+class state_machine_ : state_machine_def<state_machine_>
 {
-    typedef Empty initial_state;
+    struct state1 : state<>, euml_state<state1> { };
+    struct state2 : state<>, euml_state<state2> { };
+
+public:
+    typedef state1 initial_state;
 
     BOOST_MSM_EUML_DECLARE_TRANSITION_TABLE((
-        Empty() + play() [guard] / action == Stopped()
+        state1() + event() [guard] / action == state2()
     ), transition_table)
 };
 
-typedef msm::back::state_machine<player_> player;
-
 int main() {
-    auto sm = di::injector<>().create<boost::shared_ptr<player>>();
-    sm->process_event(play());
+    auto dep_ = make_shared<int>(0);
+
+    {
+        state_machine<state_machine_> sm_(pool(action(dep_), guard(dep_)));
+        sm_.process_event(event());
+    }
+
+    {
+        state_machine<state_machine_> sm_(pool(guard(dep_), action(dep_)));
+        sm_.process_event(event());
+    }
+
+    return 0;
 }
 
 ```
+### Injection: integration with dependency injection framework example
+```cpp
 
+struct event : euml_event<event> { };
+
+class guard : public euml_action<guard>
+{
+    BOOST_DI_CTOR(explicit guard, shared_ptr<int> dep)
+        : dep(dep)
+    { }
+
+    template<typename Event>
+    bool operator()(const Event&) const {
+        return *dep != 0;
+    }
+
+private:
+    shared_ptr<int> dep;
+};
+
+class action : public euml_action<action>
+{
+    BOOST_DI_CTOR(explicit action, shared_ptr<int> dep)
+        : dep(dep)
+    { }
+
+    template<typename Event>
+    void operator()(const Event&) {
+        (*dep)++;
+    }
+
+private:
+    shared_ptr<int> dep;
+};
+```
+
+class state_machine_ : state_machine_def<state_machine_>
+{
+    struct state1 : state<>, euml_state<state1> { };
+    struct state2 : state<>, euml_state<state2> { };
+
+public:
+    typedef state1 initial_state;
+
+    BOOST_MSM_EUML_DECLARE_TRANSITION_TABLE((
+        state1() + event() [guard] / action == state2()
+    ), transition_table)
+};
+
+int main() {
+    auto sm_ = injector<>().create<state_machine<state_machine_>>();
+    sm_.process_event(event());
+
+    return 0;
+}
+
+```
