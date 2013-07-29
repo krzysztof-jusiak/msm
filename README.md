@@ -15,8 +15,7 @@ class guard : public euml_action<guard>
         : dep(dep)
     { }
 
-    template<typename Event>
-    bool operator()(const Event&) const {
+    bool operator()(const event&) const {
         return *dep != 0;
     }
 
@@ -30,8 +29,7 @@ class action : public euml_action<action>
         : dep(dep)
     { }
 
-    template<typename Event>
-    void operator()(const Event&) {
+    void operator()(const event&) {
         (*dep)++;
     }
 
@@ -81,8 +79,7 @@ class guard : public euml_action<guard>
         : dep(dep)
     { }
 
-    template<typename Event>
-    bool operator()(const Event&) const {
+    bool operator()(const event&) const {
         return *dep != 0;
     }
 
@@ -96,8 +93,7 @@ class action : public euml_action<action>
         : dep(dep)
     { }
 
-    template<typename Event>
-    void operator()(const Event&) {
+    void operator()(const event&) {
         (*dep)++;
     }
 
