@@ -38,7 +38,6 @@ class action : public euml_action<action>
 private:
     shared_ptr<int> dep;
 };
-```
 
 class state_machine_ : state_machine_def<state_machine_>
 {
@@ -70,6 +69,7 @@ int main() {
 }
 
 ```
+
 ### Injection: integration with dependency injection framework example
 ```cpp
 
@@ -104,7 +104,6 @@ class action : public euml_action<action>
 private:
     shared_ptr<int> dep;
 };
-```
 
 class state_machine_ : state_machine_def<state_machine_>
 {
@@ -125,5 +124,4 @@ int main() {
 
     return 0;
 }
-
 ```
