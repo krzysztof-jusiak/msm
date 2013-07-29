@@ -11,6 +11,9 @@ struct event : euml_event<event> { };
 
 class guard : public euml_action<guard>
 {
+public:
+    guard() { } // for euml
+
     explicit guard(shared_ptr<int> dep)
         : dep(dep)
     { }
@@ -25,6 +28,9 @@ private:
 
 class action : public euml_action<action>
 {
+public:
+    action() { } // for euml
+
     explicit action(shared_ptr<int> dep)
         : dep(dep)
     { }
@@ -75,6 +81,9 @@ struct event : euml_event<event> { };
 
 class guard : public euml_action<guard>
 {
+public:
+    guard() { } // for euml
+
     BOOST_DI_CTOR(explicit guard, shared_ptr<int> dep)
         : dep(dep)
     { }
@@ -89,6 +98,9 @@ private:
 
 class action : public euml_action<action>
 {
+public:
+    action() { } // for euml
+
     BOOST_DI_CTOR(explicit action, shared_ptr<int> dep)
         : dep(dep)
     { }
