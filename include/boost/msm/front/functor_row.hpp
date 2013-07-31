@@ -310,22 +310,32 @@ namespace boost { namespace msm { namespace front
             FSM&        fsm_;
             STATE&      state_;
         };
+
         template <class EVT,class FSM,class SourceState,class TargetState>
         struct transition_action_result 
         {
             typedef void type;
         };
+
         template <class EVT,class FSM,class SourceState,class TargetState>
         struct Call2
         {
             Call2(EVT const& evt,FSM& fsm,SourceState& src,TargetState& tgt):
-        evt_(evt),fsm_(fsm),src_(src),tgt_(tgt){}
-        template <class FCT>
-        void operator()(::boost::msm::wrap<FCT> const& )
-        {
-            fsm_.m_actions.template get<FCT>()(evt_);
-            //FCT()(evt_,fsm_,src_,tgt_);
-        }
+                evt_(evt),fsm_(fsm),src_(src),tgt_(tgt)
+            { }
+
+            template <class FCT>
+            void operator()(::boost::msm::wrap<FCT> const&, typename boost::enable_if<boost::is_base_of<FCT, typename FSM::actions> >::type* = 0)
+            {
+                fsm_.m_actions.template get<FCT>()(evt_);
+            }
+
+            template <class FCT>
+            void operator()(::boost::msm::wrap<FCT> const&, typename boost::disable_if<boost::is_base_of<FCT, typename FSM::actions> >::type* = 0)
+            {
+                FCT()(evt_,fsm_,src_,tgt_);
+            }
+
         private:
             EVT const & evt_;
             FSM& fsm_;

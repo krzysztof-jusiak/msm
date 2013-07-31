@@ -1217,6 +1217,8 @@ template <class ToProcessEvt>
 struct Process_ <ToProcessEvt,void,void,void,void>
     : euml_action<Process_<ToProcessEvt, void, void, void, void > >
 {
+    typedef mpl::vector0<> sequence;
+
     template <class Event,class FSM,class STATE >
     struct state_action_result 
     {
