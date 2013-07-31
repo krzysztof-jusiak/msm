@@ -179,15 +179,30 @@ namespace boost { namespace msm { namespace front
         typedef GUARD   Guard;
         // action + guard
         typedef irow_tag row_type_tag;
+
         template <class EVT,class FSM,class SourceState,class TargetState,class AllStates>
-        static ::boost::msm::back::HandledEnum action_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt, AllStates&)
+        static ::boost::msm::back::HandledEnum action_call(FSM& fsm,EVT const& evt,SourceState&,TargetState&, AllStates&, typename boost::enable_if<boost::is_base_of<Action, typename FSM::actions> >::type* = 0)
+        {
+            fsm.m_actions.template get<Action>()(evt);
+            return get_functor_return_value<Action>::value;
+        }
+
+        template <class EVT,class FSM,class SourceState,class TargetState,class AllStates>
+        static ::boost::msm::back::HandledEnum action_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt, AllStates&, typename boost::disable_if<boost::is_base_of<Action, typename FSM::actions> >::type* = 0)
         {
             // create functor, call it
             Action()(evt,fsm,src,tgt);
             return get_functor_return_value<Action>::value;
         }
+
         template <class EVT,class FSM,class SourceState,class TargetState,class AllStates>
-        static bool guard_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt, AllStates&)
+        static bool guard_call(FSM& fsm,EVT const& evt,SourceState&,TargetState&, AllStates&, typename boost::enable_if<boost::is_base_of<Guard, typename FSM::actions> >::type* = 0)
+        {
+            return fsm.m_actions.template get<Guard>()(evt);
+        }
+
+        template <class EVT,class FSM,class SourceState,class TargetState,class AllStates>
+        static bool guard_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt, AllStates&, typename boost::disable_if<boost::is_base_of<Guard, typename FSM::actions> >::type* = 0)
         {
             // create functor, call it
             return Guard()(evt,fsm,src,tgt);
