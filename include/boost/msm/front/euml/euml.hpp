@@ -20,4 +20,7 @@
 #include <boost/msm/front/euml/phoenix_placeholders.hpp>
 #endif
 
+#include <boost/msm/front/euml/bind_guard.hpp>
+
 #endif //BOOST_MSM_FRONT_EUML_EUML_H
+

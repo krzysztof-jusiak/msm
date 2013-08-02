@@ -19,7 +19,12 @@ const int SDLK_ESCAPE = 0;
 class flag_game_over { };
 
 typedef euml::True_ anonymous;
-struct button_clicked : euml::euml_event<button_clicked> { };
+struct button_clicked : euml::euml_event<button_clicked>
+{
+    operator int() const {
+        return 42;
+    }
+};
 struct key_pressed : euml::euml_event<key_pressed> { };
 struct window_close : euml::euml_event<window_close> { };
 struct time_tick : euml::euml_event<time_tick> { };
@@ -29,6 +34,11 @@ class board
 public:
     bool check() {
         std::cout << "check" << std::endl;
+        return false;
+    }
+
+    bool check1(int) const {
+        return false;
     }
 };
 
@@ -153,15 +163,7 @@ public:
     }
 };
 
-class is_within_board : public action<is_within_board>
-{
-public:
-    using action::action;
-
-    bool operator()(const button_clicked&) {
-        return true;
-    }
-};
+using is_within_board = euml::bind_guard<euml_call(&board::check1), mpl::_1>;
 
 class is_neighbor : public action<is_neighbor>
 {
