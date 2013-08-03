@@ -46,7 +46,7 @@ struct And_ : euml_action<And_<T1,T2> >
     typedef mpl::vector<T1, T2> sequence;
 
     template <class EVT,class FSM,class SourceState,class TargetState>
-    bool operator()(EVT const& evt, FSM& fsm,SourceState& src,TargetState& tgt,
+    bool operator()(EVT const& evt, FSM& fsm,SourceState&,TargetState&,
             typename boost::enable_if<boost::is_base_of<T1, typename FSM::actions> >::type* = 0,
             typename boost::enable_if<boost::is_base_of<T2, typename FSM::actions> >::type* = 0)
     {
