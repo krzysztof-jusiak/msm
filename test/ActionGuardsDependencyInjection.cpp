@@ -63,6 +63,7 @@ class init_board : public euml::euml_action<init_board>
 public:
     template<typename Event>
     void operator()(const Event&) const {
+        std::cout << "init board" << std::endl;
     }
 };
 
@@ -175,7 +176,7 @@ public:
     }
 };
 
-struct is_same_item : action<is_neighbor>
+struct is_same_item : action<is_same_item>
 {
     using action::action;
 
@@ -259,6 +260,7 @@ typedef msm::back::state_machine<controller> controller_t;
 int main()
 {
     auto sm = di::make_injector().create<boost::shared_ptr<controller_t>>();
+    sm->start();
     sm->process_event(button_clicked());
 
     return 0;
