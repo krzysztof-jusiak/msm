@@ -179,8 +179,8 @@
         #undef BOOST_DI_INJECT_INITLIST_IMPL
 
         template<typename T>
-        const T& get() const {
-            return static_cast<const T&>(*this);
+        T& get() {
+            return static_cast<T&>(*this);
         }
     };
 

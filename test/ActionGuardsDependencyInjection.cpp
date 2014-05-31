@@ -32,7 +32,7 @@ struct time_tick : euml::euml_event<time_tick> { };
 class board
 {
 public:
-    bool check() {
+    bool check() const {
         std::cout << "check" << std::endl;
         return false;
     }
@@ -62,7 +62,7 @@ class init_board : public euml::euml_action<init_board>
 {
 public:
     template<typename Event>
-    void operator()(const Event&) const {
+    void operator()(const Event&) {
         std::cout << "init board" << std::endl;
     }
 };
@@ -70,7 +70,7 @@ public:
 class select_item : public euml::euml_action<select_item>
 {
 public:
-    void operator()(const button_clicked& button) const {
+    void operator()(const button_clicked& button) {
     }
 };
 
@@ -78,7 +78,7 @@ class unselect_all : public euml::euml_action<unselect_all>
 {
 public:
     template<typename Event>
-    void operator()(const Event&) const {
+    void operator()(const Event&) {
     }
 };
 
@@ -86,7 +86,7 @@ class swap_items : public euml::euml_action<swap_items>
 {
 public:
     template<typename Event>
-    void operator()(const Event&) const {
+    void operator()(const Event&) {
     }
 };
 
@@ -94,7 +94,7 @@ class revert_swap_items : public euml::euml_action<revert_swap_items>
 {
 public:
     template<typename Event>
-    void operator()(const Event&) const {
+    void operator()(const Event&) {
     }
 };
 
@@ -102,7 +102,7 @@ class show_matches : public euml::euml_action<show_matches>
 {
 public:
     template<typename Event>
-    void operator()(const Event&) const {
+    void operator()(const Event&) {
     }
 };
 
@@ -110,7 +110,7 @@ class scroll_board : public euml::euml_action<scroll_board>
 {
 public:
     template<typename Event>
-    void operator()(const Event&) const {
+    void operator()(const Event&) {
     }
 };
 
@@ -118,7 +118,7 @@ class show_time : public euml::euml_action<show_time>
 {
 public:
     template<typename Event>
-    void operator()(const Event&) const {
+    void operator()(const Event&) {
     }
 };
 
@@ -127,7 +127,7 @@ class add_points : public euml::euml_action<add_points<Value>>
 {
 public:
     template<typename Event>
-    void operator()(const Event&) const {
+    void operator()(const Event&) {
     }
 };
 
@@ -136,7 +136,7 @@ class sub_points : public euml::euml_action<sub_points<Value>>
 {
 public:
     template<typename Event>
-    void operator()(const Event&) const {
+    void operator()(const Event&) {
     }
 };
 
@@ -144,7 +144,7 @@ class show_points : public euml::euml_action<show_points>
 {
 public:
     template<typename Event>
-    void operator()(const Event&) const {
+    void operator()(const Event&) {
     }
 };
 
@@ -152,7 +152,7 @@ class show_results : public euml::euml_action<show_results>
 {
 public:
     template<typename Event>
-    void operator()(const Event&) const {
+    void operator()(const Event&) {
     }
 };
 
@@ -160,7 +160,7 @@ class finish_game : public euml::euml_action<finish_game>
 {
 public:
     template<typename Event>
-    void operator()(const Event&) const {
+    void operator()(const Event&) {
     }
 };
 
