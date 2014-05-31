@@ -980,13 +980,13 @@ struct True_ : euml::euml_action<True_>
         return true;
     }
     template <class Event,class FSM,class STATE>
-    bool operator()(Event const&,FSM&,STATE& )
+    bool operator()(Event const&,FSM&,STATE& ) const
     {
         return true;
     }
 
     template <class Event>
-    bool operator()(Event const&)
+    bool operator()(Event const&) const
     {
         return true;
     }
@@ -1011,18 +1011,18 @@ struct False_ : euml::euml_action<False_>
     typedef ::boost::mpl::set<state_action_tag,action_tag> tag_type;
 
     template <class EVT,class FSM,class SourceState,class TargetState>
-    bool operator()(EVT const&,FSM&,SourceState& ,TargetState& )
+    bool operator()(EVT const&,FSM&,SourceState& ,TargetState& ) const
     {
         return false;
     }
     template <class Event,class FSM,class STATE>
-    bool operator()(Event const&,FSM&,STATE& )
+    bool operator()(Event const&,FSM&,STATE& ) const
     {
         return false;
     }
 
     template <class Event>
-    bool operator()(Event const&)
+    bool operator()(Event const&) const
     {
         return false;
     }

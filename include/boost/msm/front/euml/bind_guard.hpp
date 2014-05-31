@@ -6,7 +6,6 @@
 #include <boost/function_types/components.hpp>
 #include <boost/mpl/at.hpp>
 #include <boost/mpl/placeholders.hpp>
-#include <boost/di/ctor.hpp>
 #include <boost/msm/front/euml/common.hpp>
 
 #define euml_call(func) decltype(func), func
@@ -25,7 +24,7 @@ class bind_guard<X, func> : public euml_action<bind_guard<X, func>>
 public:
     bind_guard() { }
 
-    BOOST_DI_CTOR(bind_guard, shared_ptr<B> b, int/*dummy*/)
+    bind_guard(shared_ptr<B> b)
         : b(b)
     { }
 
@@ -47,7 +46,7 @@ class bind_guard<X, func, mpl::_1> : public euml_action<bind_guard<X, func, mpl:
 public:
     bind_guard() { }
 
-    BOOST_DI_CTOR(bind_guard, shared_ptr<B> b, int/*dummy*/)
+    bind_guard(shared_ptr<B> b)
         : b(b)
     { }
 

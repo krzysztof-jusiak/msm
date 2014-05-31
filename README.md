@@ -84,7 +84,7 @@ class guard : public euml_action<guard>
 public:
     guard() { } // for euml
 
-    BOOST_DI_CTOR(explicit guard, shared_ptr<int> dep)
+    explicit guard(shared_ptr<int> dep)
         : dep(dep)
     { }
 
@@ -101,7 +101,7 @@ class action : public euml_action<action>
 public:
     action() { } // for euml
 
-    BOOST_DI_CTOR(explicit action, shared_ptr<int> dep)
+    explicit action(shared_ptr<int> dep)
         : dep(dep)
     { }
 

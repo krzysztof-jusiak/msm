@@ -67,7 +67,7 @@
 #include <boost/mpl/copy.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/back_inserter.hpp>
-#include <boost/di/ctor.hpp>
+#include <boost/di/inject.hpp>
 #include "pool.hpp"
 
 BOOST_MPL_HAS_XXX_TRAIT_DEF(accept_sig)
@@ -1712,7 +1712,7 @@ private:
          fill_states(this);
      }
 
-     BOOST_DI_CTOR(state_machine, const actions& a)
+     BOOST_DI_INJECT(state_machine, const actions& a)
          :Derived()
          ,m_events_queue()
          ,m_deferred_events_queue()
