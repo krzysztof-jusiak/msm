@@ -8,6 +8,8 @@
 #include <boost/mpl/placeholders.hpp>
 #include <boost/msm/front/euml/common.hpp>
 #include <boost/di/aux_/config.hpp>
+#define BOOST_DI_CFG_INJECT_VA_ARGS
+#include <boost/di/inject.hpp>
 
 #define euml_call(func) BOOST_DI_FEATURE_DECLTYPE(func), func
 
