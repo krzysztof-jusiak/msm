@@ -1,9 +1,9 @@
 **Boost Meta State Machine fork**
 
-### Features
+# Features
  + actions/guards injection using dependency injection constructor
 
-### Hello World
+# Hello World
 ```cpp
 #include <boost/msm/back/state_machine.hpp>
 #include <boost/msm/front/state_machine_def.hpp>
