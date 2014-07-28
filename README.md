@@ -1,4 +1,4 @@
-**Boost Meta State Machine with Dependency Injection** allows to injection actions/guards into the state machine using dependency injection framework
+**Boost Meta State Machine with Dependency Injection** allows to injection actions/guards into the state machine using dependency injection framework.
 
 **Hello World**
 ```cpp
