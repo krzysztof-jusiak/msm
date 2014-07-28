@@ -1,9 +1,9 @@
-**Boost Meta State Machine fork**
+**Boost Meta State Machine with Dependency Injection**
 
-# Features
+**Features**
  + actions/guards injection using dependency injection constructor
 
-# Hello World
+**Hello World**
 ```cpp
 #include <boost/msm/back/state_machine.hpp>
 #include <boost/msm/front/state_machine_def.hpp>
@@ -77,4 +77,7 @@ int main() {
     return 0;
 }
 ```
+
+### License
+Distributed under the [Boost Software License, Version 1.0](http://www.boost.org/LICENSE_1_0.txt).
 
