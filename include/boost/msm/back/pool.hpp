@@ -22,6 +22,7 @@
     #include <boost/mpl/size.hpp>
     #include <boost/mpl/has_xxx.hpp>
     #include <boost/config.hpp>
+    #define BOOST_DI_CFG_INJECT_VA_ARGS
     #include <boost/di/inject.hpp>
 
     #if defined(BOOST_GCC) || defined(BOOST_CLANG)

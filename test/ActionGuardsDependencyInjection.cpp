@@ -123,7 +123,7 @@ public:
 };
 
 template<int Value>
-class add_points : public euml::euml_action<add_points<Value>>
+class add_points : public euml::euml_action<add_points<Value> >
 {
 public:
     template<typename Event>
@@ -132,7 +132,7 @@ public:
 };
 
 template<int Value>
-class sub_points : public euml::euml_action<sub_points<Value>>
+class sub_points : public euml::euml_action<sub_points<Value> >
 {
 public:
     template<typename Event>
@@ -164,13 +164,11 @@ public:
     }
 };
 
-using is_within_board = euml::bind_guard<euml_call(&board::check1), mpl::_1>;
+typedef euml::bind_guard<euml_call(&board::check1), mpl::_1> is_within_board;
 
 class is_neighbor : public action<is_neighbor>
 {
 public:
-    using action::action;
-
     bool operator()(const button_clicked&) const {
         return true;
     }
@@ -178,8 +176,6 @@ public:
 
 struct is_same_item : action<is_same_item>
 {
-    using action::action;
-
     bool operator()(const button_clicked&) const {
         return true;
     }
@@ -211,7 +207,7 @@ public:
 };
 
 template<int Key>
-class is_key : public euml::euml_action<is_key<Key>>
+class is_key : public euml::euml_action<is_key<Key> >
 {
 public:
     bool operator()(const key_pressed&) const {
@@ -249,17 +245,15 @@ public:
       , wait_for_any_key()     == wait_for_client()      + time_tick() [is_game_timeout()] / show_results()
       ,                           wait_for_client()      + time_tick() [not is_game_timeout()] / show_time()
       , wait_for_any_key()     == wait_for_client()      + key_pressed() [is_key<SDLK_ESCAPE>()] / show_results()
-      , wait_for_any_key()     == wait_for_client()      + window_close() / show_results()
-      , game_over()            == wait_for_any_key()     + key_pressed() / finish_game()
    // +------------------------------------------------------------------------------------------------------------------------------------------------------------------+
     ), transition_table)
 };
 
-typedef msm::back::state_machine<controller> controller_t;
+typedef msm::back::state_machine<controller, msm::back::use_dependency_injection> controller_t;
 
 int main()
 {
-    auto sm = di::make_injector().create<boost::shared_ptr<controller_t>>();
+    boost::shared_ptr<controller_t> sm = di::make_injector().create<boost::shared_ptr<controller_t> >();
     sm->start();
     sm->process_event(button_clicked());
 

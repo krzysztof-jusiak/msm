@@ -50,6 +50,9 @@ struct state_machine_def :  public boost::msm::front::detail::state_base<BaseSta
         typedef T1 Source;
         typedef T2 Target;
         typedef Event Evt;
+        typedef none Action; // TODO
+        typedef none Guard; // TODO
+
         template <class FSM,class SourceState,class TargetState,class AllStates>
         static ::boost::msm::back::HandledEnum action_call(FSM& fsm,Event const& evt,SourceState&,TargetState&, AllStates&)
         {
@@ -70,6 +73,8 @@ struct state_machine_def :  public boost::msm::front::detail::state_base<BaseSta
         typedef T1 Source;
         typedef T2 Target;
         typedef Event Evt;
+        typedef none Action;
+        typedef none Guard;
     };
 
     template<
@@ -85,6 +90,9 @@ struct state_machine_def :  public boost::msm::front::detail::state_base<BaseSta
         typedef T1 Source;
         typedef T2 Target;
         typedef Event Evt;
+        typedef none Action; // TODO
+        typedef none Guard; // TODO
+
         template <class FSM,class SourceState,class TargetState, class AllStates>
         static ::boost::msm::back::HandledEnum action_call(FSM& fsm,Event const& evt,SourceState&,TargetState&,AllStates&)
         {
@@ -111,6 +119,9 @@ struct state_machine_def :  public boost::msm::front::detail::state_base<BaseSta
         typedef T1 Source;
         typedef T2 Target;
         typedef Event Evt;
+        typedef none Action; // TODO
+        typedef none Guard; // TODO
+
         template <class FSM,class SourceState,class TargetState,class AllStates>
         static bool guard_call(FSM& fsm,Event const& evt,SourceState&,TargetState&,AllStates&)
         {
@@ -130,6 +141,9 @@ struct state_machine_def :  public boost::msm::front::detail::state_base<BaseSta
         typedef T1 Source;
         typedef T1 Target;
         typedef Event Evt;
+        typedef none Action; // TODO
+        typedef none Guard; // TODO
+
         template <class FSM,class SourceState,class TargetState,class AllStates>
         static ::boost::msm::back::HandledEnum action_call(FSM& fsm,Event const& evt,SourceState&,TargetState&,AllStates&)
         {
@@ -151,6 +165,9 @@ struct state_machine_def :  public boost::msm::front::detail::state_base<BaseSta
         typedef T1 Source;
         typedef T1 Target;
         typedef Event Evt;
+        typedef none Action; // TODO
+        typedef none Guard; // TODO
+
         template <class FSM,class SourceState,class TargetState,class AllStates>
         static ::boost::msm::back::HandledEnum action_call(FSM& fsm,Event const& evt,SourceState&,TargetState&,AllStates&)
         {
@@ -176,6 +193,9 @@ struct state_machine_def :  public boost::msm::front::detail::state_base<BaseSta
         typedef T1 Source;
         typedef T1 Target;
         typedef Event Evt;
+        typedef none Action; // TODO
+        typedef none Guard; // TODO
+
         template <class FSM,class SourceState,class TargetState,class AllStates>
         static bool guard_call(FSM& fsm,Event const& evt,SourceState&,TargetState&,AllStates&)
         {
@@ -194,7 +214,10 @@ struct state_machine_def :  public boost::msm::front::detail::state_base<BaseSta
         typedef T1 Source;
         typedef T1 Target;
         typedef Event Evt;
+        typedef none Action; // TODO
+        typedef none Guard; // TODO
     };
+
 protected:
     // Default no-transition handler. Can be replaced in the Derived SM class.
     template <class FSM,class Event>

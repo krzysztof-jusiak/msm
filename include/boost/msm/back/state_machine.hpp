@@ -61,12 +61,14 @@
 #include <boost/msm/back/common_types.hpp>
 #include <boost/msm/back/args.hpp>
 #include <boost/msm/back/default_compile_policy.hpp>
+#include <boost/msm/back/di_policy.hpp>
 #include <boost/msm/back/dispatch_table.hpp>
 #include <boost/msm/back/no_fsm_check.hpp>
 #include <boost/msm/back/queue_container_deque.hpp>
 #include <boost/mpl/copy.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/back_inserter.hpp>
+#define BOOST_DI_CFG_INJECT_VA_ARGS
 #include <boost/di/inject.hpp>
 #include "pool.hpp"
 
@@ -83,6 +85,7 @@ BOOST_MPL_HAS_XXX_TRAIT_DEF(fsm_check)
 BOOST_MPL_HAS_XXX_TRAIT_DEF(compile_policy)
 BOOST_MPL_HAS_XXX_TRAIT_DEF(queue_container_policy)
 BOOST_MPL_HAS_XXX_TRAIT_DEF(using_declared_table)
+BOOST_MPL_HAS_XXX_TRAIT_DEF(di_policy)
 
 #ifndef BOOST_MSM_CONSTRUCTOR_ARG_SIZE
 #define BOOST_MSM_CONSTRUCTOR_ARG_SIZE 5 // default max number of arguments for constructors
@@ -112,6 +115,7 @@ BOOST_PARAMETER_TEMPLATE_KEYWORD(history_policy)
 BOOST_PARAMETER_TEMPLATE_KEYWORD(compile_policy)
 BOOST_PARAMETER_TEMPLATE_KEYWORD(fsm_check_policy)
 BOOST_PARAMETER_TEMPLATE_KEYWORD(queue_container_policy)
+BOOST_PARAMETER_TEMPLATE_KEYWORD(di_policy)
 
 typedef ::boost::parameter::parameters<
     ::boost::parameter::required< ::boost::msm::back::tag::front_end >
@@ -127,6 +131,10 @@ typedef ::boost::parameter::parameters<
   , ::boost::parameter::optional<
         ::boost::parameter::deduced< ::boost::msm::back::tag::queue_container_policy>,
         has_queue_container_policy< ::boost::mpl::_ >
+    >
+  , ::boost::parameter::optional<
+        ::boost::parameter::deduced< ::boost::msm::back::tag::di_policy>,
+        has_di_policy< ::boost::mpl::_ >
     >
 > state_machine_signature;
 
@@ -150,21 +158,22 @@ template <
     , class A2 = parameter::void_
     , class A3 = parameter::void_
     , class A4 = parameter::void_
+    , class A5 = parameter::void_
 >
 class state_machine : //public Derived
     public ::boost::parameter::binding<
-            typename state_machine_signature::bind<A0,A1,A2,A3,A4>::type, ::boost::msm::back::tag::front_end
+            typename state_machine_signature::bind<A0,A1,A2,A3,A4,A5>::type, ::boost::msm::back::tag::front_end
     >::type
-    , public make_euml_terminal<state_machine<A0,A1,A2,A3,A4>,
+    , public make_euml_terminal<state_machine<A0,A1,A2,A3,A4,A5>,
                          typename ::boost::parameter::binding<
-                                    typename state_machine_signature::bind<A0,A1,A2,A3,A4>::type, ::boost::msm::back::tag::front_end
+                                    typename state_machine_signature::bind<A0,A1,A2,A3,A4,A5>::type, ::boost::msm::back::tag::front_end
                          >::type
       >
 {
 public:
     // Create ArgumentPack
     typedef typename
-        state_machine_signature::bind<A0,A1,A2,A3,A4>::type
+        state_machine_signature::bind<A0,A1,A2,A3,A4,A5>::type
         state_machine_args;
 
     // Extract first logical parameter.
@@ -184,10 +193,14 @@ public:
         state_machine_args, ::boost::msm::back::tag::queue_container_policy,
         queue_container_deque >::type                                                               QueueContainerPolicy;
 
+    struct NoDIPolicy { };
+    typedef typename ::boost::parameter::binding<
+        state_machine_args, ::boost::msm::back::tag::di_policy, NoDIPolicy >::type              DIPolicy;
+
 private:
 
     typedef boost::msm::back::state_machine<
-        A0,A1,A2,A3,A4>                             library_sm;
+        A0,A1,A2,A3,A4,A5>                             library_sm;
 
     typedef ::boost::function<
         execute_return ()>                          transition_fct;
@@ -209,7 +222,7 @@ private:
     typedef bool (*flag_handler)(library_sm const&);
 
     // all state machines are friend with each other to allow embedding any of them in another fsm
-    template <class ,class , class, class, class
+    template <class ,class , class, class, class, class
     > friend class boost::msm::back::state_machine;
 
     // helper to add, if needed, visitors to all states
@@ -1298,7 +1311,12 @@ private:
     { };
 
     typedef rec_actions<typename actions_t<stt>::type> all_actions_t;
-    typedef pool<typename all_actions_t::type> actions;
+
+    typedef typename mpl::if_<
+        is_same<DIPolicy, use_dependency_injection>
+      , pool<typename all_actions_t::type>
+      , pool<>
+    >::type actions;
 
     // extends the transition table with rows from composite states
     template <class Composite>
@@ -1694,7 +1712,7 @@ private:
      }
 
      // Construct with the default initial states
-     state_machine<A0,A1,A2,A3,A4 >()
+     state_machine<A0,A1,A2,A3,A4,A5>()
          :Derived()
          ,m_events_queue()
          ,m_deferred_events_queue()
@@ -1732,7 +1750,7 @@ private:
      }
 
      template <class Expr>
-     state_machine<A0,A1,A2,A3,A4 >
+     state_machine<A0,A1,A2,A3,A4,A5>
          (Expr const& expr,typename ::boost::enable_if<typename ::boost::proto::is_expr<Expr>::type >::type* =0)
          :Derived()
          ,m_events_queue()
@@ -1761,7 +1779,7 @@ private:
 #define MSM_CONSTRUCTOR_HELPER_EXECUTE_SUB(z, n, unused) ARG ## n t ## n
 #define MSM_CONSTRUCTOR_HELPER_EXECUTE(z, n, unused)                                \
         template <BOOST_PP_ENUM_PARAMS(n, class ARG)>                               \
-        state_machine<A0,A1,A2,A3,A4                                                \
+        state_machine<A0,A1,A2,A3,A4,A5                                             \
         >(BOOST_PP_ENUM(n, MSM_CONSTRUCTOR_HELPER_EXECUTE_SUB, ~ ),                 \
         typename ::boost::disable_if<typename ::boost::proto::is_expr<ARG0>::type >::type* =0,  \
         typename ::boost::disable_if<boost::is_convertible<ARG0, actions> >::type* = 0)         \
@@ -1780,7 +1798,7 @@ private:
          fill_states(this);                                                         \
      }                                                                              \
         template <class Expr,BOOST_PP_ENUM_PARAMS(n, class ARG)>                    \
-        state_machine<A0,A1,A2,A3,A4                                                \
+        state_machine<A0,A1,A2,A3,A4,A5                                             \
         >(Expr const& expr,BOOST_PP_ENUM(n, MSM_CONSTRUCTOR_HELPER_EXECUTE_SUB, ~ ), \
         typename ::boost::enable_if<typename ::boost::proto::is_expr<Expr>::type >::type* =0 ) \
         :Derived(BOOST_PP_ENUM_PARAMS(n,t))                                         \
@@ -1817,7 +1835,7 @@ private:
          }
         return *this;
      }
-     state_machine<A0,A1,A2,A3,A4>
+     state_machine<A0,A1,A2,A3,A4,A5>
          (library_sm const& rhs)
          : Derived(rhs)
      {

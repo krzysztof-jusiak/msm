@@ -7,16 +7,17 @@
 #include <boost/mpl/at.hpp>
 #include <boost/mpl/placeholders.hpp>
 #include <boost/msm/front/euml/common.hpp>
+#include <boost/di/aux_/config.hpp>
 
-#define euml_call(func) decltype(func), func
+#define euml_call(func) BOOST_DI_FEATURE_DECLTYPE(func), func
 
 namespace boost { namespace msm { namespace front { namespace euml {
 
-template<typename X, X func, typename...>
+template<typename X, X func, typename = void>
 class bind_guard;
 
 template<typename X, X func>
-class bind_guard<X, func> : public euml_action<bind_guard<X, func>>
+class bind_guard<X, func> : public euml_action<bind_guard<X, func> >
 {
     typedef typename function_types::components<X>::type t;
     typedef typename boost::remove_reference<typename mpl::at_c<t, 1>::type>::type B;
@@ -24,7 +25,7 @@ class bind_guard<X, func> : public euml_action<bind_guard<X, func>>
 public:
     bind_guard() { }
 
-    bind_guard(shared_ptr<B> b)
+    BOOST_DI_INJECT(bind_guard, shared_ptr<B> b)
         : b(b)
     { }
 
@@ -38,7 +39,7 @@ private:
 };
 
 template<typename X, X func>
-class bind_guard<X, func, mpl::_1> : public euml_action<bind_guard<X, func, mpl::_1>>
+class bind_guard<X, func, mpl::_1> : public euml_action<bind_guard<X, func, mpl::_1> >
 {
     typedef typename function_types::components<X>::type t;
     typedef typename boost::remove_reference<typename mpl::at_c<t, 1>::type>::type B;
@@ -46,7 +47,7 @@ class bind_guard<X, func, mpl::_1> : public euml_action<bind_guard<X, func, mpl:
 public:
     bind_guard() { }
 
-    bind_guard(shared_ptr<B> b)
+    BOOST_DI_INJECT(bind_guard, shared_ptr<B> b)
         : b(b)
     { }
 

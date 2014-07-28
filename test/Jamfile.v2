@@ -24,6 +24,7 @@ project msm
 
 test-suite msm-unit-tests
     :
+    [ run ActionGuardsDependencyInjection.cpp : : : <define>BOOST_DI_CFG_CTOR_LIMIT_SIZE=20 ]
     [ run Anonymous.cpp ]
     [ run AnonymousEuml.cpp ]
     [ run CompositeEuml.cpp ]
