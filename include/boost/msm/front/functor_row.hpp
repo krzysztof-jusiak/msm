@@ -126,8 +126,17 @@ namespace boost { namespace msm { namespace front
         typedef GUARD   Guard;
         // no action
         typedef g_row_tag row_type_tag;
+
         template <class EVT,class FSM,class SourceState,class TargetState,class AllStates>
-        static bool guard_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt, AllStates&)
+        static bool guard_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt, AllStates&,
+                typename boost::enable_if<boost::is_base_of<GUARD, typename FSM::actions> >::type* = 0)
+        {
+            return fsm.m_actions.template get<GUARD>()(evt);
+        }
+
+        template <class EVT,class FSM,class SourceState,class TargetState,class AllStates>
+        static bool guard_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt, AllStates&,
+                typename boost::disable_if<boost::is_base_of<GUARD, typename FSM::actions> >::type* = 0)
         {
             // create functor, call it
             return Guard()(evt,fsm,src,tgt);
@@ -144,11 +153,21 @@ namespace boost { namespace msm { namespace front
         typedef none    Guard;
         // no guard
         typedef a_irow_tag row_type_tag;
+
         template <class EVT,class FSM,class SourceState,class TargetState,class AllStates>
-        static ::boost::msm::back::HandledEnum action_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt, AllStates&)
+        static ::boost::msm::back::HandledEnum action_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt, AllStates&,
+                typename boost::disable_if<boost::is_base_of<ACTION, typename FSM::actions> >::type* = 0)
         {
             // create functor, call it
             Action()(evt,fsm,src,tgt);
+            return get_functor_return_value<Action>::value;
+        }
+
+        template <class EVT,class FSM,class SourceState,class TargetState,class AllStates>
+        static ::boost::msm::back::HandledEnum action_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt, AllStates&,
+                typename boost::enable_if<boost::is_base_of<ACTION, typename FSM::actions> >::type* = 0)
+        {
+            fsm.m_actions.template get<Action>()(evt);
             return get_functor_return_value<Action>::value;
         }
     };
@@ -162,11 +181,20 @@ namespace boost { namespace msm { namespace front
         typedef GUARD   Guard;
         // no action
         typedef g_irow_tag row_type_tag;
+
         template <class EVT,class FSM,class SourceState,class TargetState,class AllStates>
-        static bool guard_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt, AllStates&)
+        static bool guard_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt, AllStates&,
+                typename boost::disable_if<boost::is_base_of<GUARD, typename FSM::actions> >::type* = 0)
         {
             // create functor, call it
             return Guard()(evt,fsm,src,tgt);
+        }
+
+        template <class EVT,class FSM,class SourceState,class TargetState,class AllStates>
+        static bool guard_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt, AllStates&,
+                typename boost::enable_if<boost::is_base_of<GUARD, typename FSM::actions> >::type* = 0)
+        {
+            return fsm.m_actions.template get<GUARD>()(evt);
         }
     };
     template<class SOURCE,class EVENT,class ACTION,class GUARD>

@@ -2536,6 +2536,7 @@ BOOST_PP_REPEAT(BOOST_PP_ADD(BOOST_MSM_VISITOR_ARG_SIZE,1), MSM_VISITOR_ARGS_EXE
          m_events_queue = rhs.m_events_queue;
          m_deferred_events_queue = rhs.m_deferred_events_queue;
          m_history = rhs.m_history;
+         m_actions = rhs.m_actions;
          m_event_processing = rhs.m_event_processing;
          m_is_included = rhs.m_is_included;
          m_substate_list = rhs.m_substate_list;
