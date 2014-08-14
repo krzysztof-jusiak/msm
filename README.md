@@ -83,7 +83,7 @@ int main() {
 ```
 
 **State Machine Testing**
-```
+```cpp
 struct state_machine_ : public state_machine_def<state_machine_> {
     using initial_state = state1;
 
