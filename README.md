@@ -106,7 +106,7 @@ int main() {
     // test transition to state2 after event1 when
     // guard returns true with action
     {
-        test::expectations<sm_t> ex(sm);
+        test::expectations<state_machine> ex(sm);
         ex.call<guard>().will_return(true);
         ex.call<action>().times(1);
         ex.state<state2>();
@@ -117,7 +117,7 @@ int main() {
     // test transition back to state1 after event2 when
     // guard and guard2 return true with action and action2
     {
-        test::expectations<sm_t> ex(sm);
+        test::expectations<state_machine> ex(sm);
         ex.call<guard>().will_return(true);
         ex.call<guard2>().will_return(true);
         ex.call<action>().times(1);
