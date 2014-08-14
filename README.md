@@ -47,11 +47,10 @@ private:
     shared_ptr<data> data;
 };
 
-class state_machine_ : public state_machine_def<state_machine_> {
-    struct state1 : state<>, euml_state<state1> { };
-    struct state2 : state<>, euml_state<state2> { };
+struct state1 : state<>, euml_state<state1> { };
+struct state2 : state<>, euml_state<state2> { };
 
-public:
+struct state_machine_ : public state_machine_def<state_machine_> {
     using initial_state = state1;
 
     BOOST_MSM_EUML_DECLARE_TRANSITION_TABLE((
@@ -66,14 +65,67 @@ using state_machine = back::state_machine<
 >;
 
 int main() {
-    // create State Machine and inject dependencies
+    // create state machine and inject dependencies
     auto sm = boost::di::make_injector().create<state_machine>();
+
+    // or create state machine manualy
+    // auto d = make_shared<data>();
+    // state_machine sm(back::pool(guard(d), action(d)));
 
     sm.process_event(event());
     assert(0 == *sm.current_state());
 
     sm.process_event(event());
     assert(1 == *sm.current_state());
+
+    return 0;
+}
+```
+
+**State Machine Testing**
+```
+struct state_machine_ : public state_machine_def<state_machine_> {
+    using initial_state = state1;
+
+    BOOST_MSM_EUML_DECLARE_TRANSITION_TABLE((
+        state2() == state1() + event1() [guard()] / action()
+      , state1() == state2() + event2() [guard() && guard2()] / (action(), action2())
+    ), transition_table)
+};
+
+using state_machine = back::state_machine<
+    state_machine_
+  , back::use_dependency_injection_for_test // dependency injection policy for test
+>;
+
+int main() {
+    //create state machine
+    //fake actions/guards have no dependencies so default constructor is enough
+    state_machine sm;
+
+    // test transition to state2 after event1 when
+    // guard returns true with action
+    {
+        test::expectations<sm_t> ex(sm);
+        ex.call<guard>().will_return(true);
+        ex.call<action>().times(1);
+        ex.state<state2>();
+
+        sm.process_event(event1());
+    }
+
+    // test transition back to state1 after event2 when
+    // guard and guard2 return true with action and action2
+    {
+        test::expectations<sm_t> ex(sm);
+        ex.call<guard>().will_return(true);
+        ex.call<guard2>().will_return(true);
+        ex.call<action>().times(1);
+        ex.call<action2>().times(1);
+        ex.state<state1>();
+
+        sm.process_event(event2());
+    }
 
     return 0;
 }

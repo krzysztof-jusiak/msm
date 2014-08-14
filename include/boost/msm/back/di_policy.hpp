@@ -20,6 +20,11 @@ struct use_dependency_injection
     typedef int di_policy;
 };
 
+struct use_dependency_injection_for_test
+{
+    typedef int di_policy;
+};
+
 }}}// boost::msm::back
 #endif
 

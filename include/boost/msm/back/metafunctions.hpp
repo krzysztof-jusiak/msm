@@ -47,10 +47,12 @@
 #include <boost/utility/enable_if.hpp>
 
 #include <boost/msm/row_tags.hpp>
+#include <boost/msm/test/fake.hpp>
 
 // mpl_graph graph implementation and depth first search
 #include <boost/msm/mpl_graph/incidence_list_graph.hpp>
 #include <boost/msm/mpl_graph/depth_first_search.hpp>
+#include <boost/msm/back/di_policy.hpp>
 
 BOOST_MPL_HAS_XXX_TRAIT_DEF(explicit_creation)
 BOOST_MPL_HAS_XXX_TRAIT_DEF(pseudo_entry)
@@ -973,7 +975,20 @@ struct build_interrupt_state_flag_list
     >::type type;
 };
 
-} } }//boost::msm::back
+
+}
+
+template<typename T, typename TBase, typename TDIPolicy>
+struct is_base_of_
+    : boost::is_base_of<T, TBase>
+{ };
+
+template<typename T, typename TBase>
+struct is_base_of_<T, TBase, back::use_dependency_injection_for_test>
+    : boost::is_base_of<test::fake<T>, TBase>
+{ };
+
+} }//boost::msm::back
 
 #endif // BOOST_MSM_BACK_METAFUNCTIONS_H
 

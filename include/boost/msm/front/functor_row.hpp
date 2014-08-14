@@ -74,13 +74,13 @@ namespace boost { namespace msm { namespace front
             return get_functor_return_value<Action>::value;
         }
         template <class EVT,class FSM,class SourceState,class TargetState,class AllStates>
-        static bool guard_call(FSM& fsm,EVT const& evt,SourceState&,TargetState&,AllStates&, typename boost::enable_if<boost::is_base_of<Guard, typename FSM::actions> >::type* = 0)
+        static bool guard_call(FSM& fsm,EVT const& evt,SourceState&,TargetState&,AllStates&, typename boost::enable_if<is_base_of_<Guard, typename FSM::actions, typename FSM::DIPolicy> >::type* = 0)
         {
-            return fsm.m_actions.template get<Guard>()(evt);
+            return fsm.template get<Guard>()(evt);
         }
 
         template <class EVT,class FSM,class SourceState,class TargetState,class AllStates>
-        static bool guard_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt,AllStates&, typename boost::disable_if<boost::is_base_of<Guard, typename FSM::actions> >::type* = 0)
+        static bool guard_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt,AllStates&, typename boost::disable_if<is_base_of_<Guard, typename FSM::actions, typename FSM::DIPolicy> >::type* = 0)
         {
             // create functor, call it
             return Guard()(evt,fsm,src,tgt);
@@ -129,14 +129,14 @@ namespace boost { namespace msm { namespace front
 
         template <class EVT,class FSM,class SourceState,class TargetState,class AllStates>
         static bool guard_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt, AllStates&,
-                typename boost::enable_if<boost::is_base_of<GUARD, typename FSM::actions> >::type* = 0)
+                typename boost::enable_if<is_base_of_<GUARD, typename FSM::actions, typename FSM::DIPolicy> >::type* = 0)
         {
-            return fsm.m_actions.template get<GUARD>()(evt);
+            return fsm.template get<GUARD>()(evt);
         }
 
         template <class EVT,class FSM,class SourceState,class TargetState,class AllStates>
         static bool guard_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt, AllStates&,
-                typename boost::disable_if<boost::is_base_of<GUARD, typename FSM::actions> >::type* = 0)
+                typename boost::disable_if<is_base_of_<GUARD, typename FSM::actions, typename FSM::DIPolicy> >::type* = 0)
         {
             // create functor, call it
             return Guard()(evt,fsm,src,tgt);
@@ -156,7 +156,7 @@ namespace boost { namespace msm { namespace front
 
         template <class EVT,class FSM,class SourceState,class TargetState,class AllStates>
         static ::boost::msm::back::HandledEnum action_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt, AllStates&,
-                typename boost::disable_if<boost::is_base_of<ACTION, typename FSM::actions> >::type* = 0)
+                typename boost::disable_if<is_base_of_<ACTION, typename FSM::actions, typename FSM::DIPolicy> >::type* = 0)
         {
             // create functor, call it
             Action()(evt,fsm,src,tgt);
@@ -165,9 +165,9 @@ namespace boost { namespace msm { namespace front
 
         template <class EVT,class FSM,class SourceState,class TargetState,class AllStates>
         static ::boost::msm::back::HandledEnum action_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt, AllStates&,
-                typename boost::enable_if<boost::is_base_of<ACTION, typename FSM::actions> >::type* = 0)
+                typename boost::enable_if<is_base_of_<ACTION, typename FSM::actions, typename FSM::DIPolicy> >::type* = 0)
         {
-            fsm.m_actions.template get<Action>()(evt);
+            fsm.template get<Action>()(evt);
             return get_functor_return_value<Action>::value;
         }
     };
@@ -184,7 +184,7 @@ namespace boost { namespace msm { namespace front
 
         template <class EVT,class FSM,class SourceState,class TargetState,class AllStates>
         static bool guard_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt, AllStates&,
-                typename boost::disable_if<boost::is_base_of<GUARD, typename FSM::actions> >::type* = 0)
+                typename boost::disable_if<is_base_of_<GUARD, typename FSM::actions, typename FSM::DIPolicy> >::type* = 0)
         {
             // create functor, call it
             return Guard()(evt,fsm,src,tgt);
@@ -192,9 +192,9 @@ namespace boost { namespace msm { namespace front
 
         template <class EVT,class FSM,class SourceState,class TargetState,class AllStates>
         static bool guard_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt, AllStates&,
-                typename boost::enable_if<boost::is_base_of<GUARD, typename FSM::actions> >::type* = 0)
+                typename boost::enable_if<is_base_of_<GUARD, typename FSM::actions, typename FSM::DIPolicy> >::type* = 0)
         {
-            return fsm.m_actions.template get<GUARD>()(evt);
+            return fsm.template get<GUARD>()(evt);
         }
     };
     template<class SOURCE,class EVENT,class ACTION,class GUARD>
@@ -209,14 +209,14 @@ namespace boost { namespace msm { namespace front
         typedef irow_tag row_type_tag;
 
         template <class EVT,class FSM,class SourceState,class TargetState,class AllStates>
-        static ::boost::msm::back::HandledEnum action_call(FSM& fsm,EVT const& evt,SourceState&,TargetState&, AllStates&, typename boost::enable_if<boost::is_base_of<Action, typename FSM::actions> >::type* = 0)
+        static ::boost::msm::back::HandledEnum action_call(FSM& fsm,EVT const& evt,SourceState&,TargetState&, AllStates&, typename boost::enable_if<is_base_of_<Action, typename FSM::actions, typename FSM::DIPolicy> >::type* = 0)
         {
-            fsm.m_actions.template get<Action>()(evt);
+            fsm.template get<Action>()(evt);
             return get_functor_return_value<Action>::value;
         }
 
         template <class EVT,class FSM,class SourceState,class TargetState,class AllStates>
-        static ::boost::msm::back::HandledEnum action_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt, AllStates&, typename boost::disable_if<boost::is_base_of<Action, typename FSM::actions> >::type* = 0)
+        static ::boost::msm::back::HandledEnum action_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt, AllStates&, typename boost::disable_if<is_base_of_<Action, typename FSM::actions, typename FSM::DIPolicy> >::type* = 0)
         {
             // create functor, call it
             Action()(evt,fsm,src,tgt);
@@ -224,13 +224,13 @@ namespace boost { namespace msm { namespace front
         }
 
         template <class EVT,class FSM,class SourceState,class TargetState,class AllStates>
-        static bool guard_call(FSM& fsm,EVT const& evt,SourceState&,TargetState&, AllStates&, typename boost::enable_if<boost::is_base_of<Guard, typename FSM::actions> >::type* = 0)
+        static bool guard_call(FSM& fsm,EVT const& evt,SourceState&,TargetState&, AllStates&, typename boost::enable_if<is_base_of_<Guard, typename FSM::actions, typename FSM::DIPolicy> >::type* = 0)
         {
-            return fsm.m_actions.template get<Guard>()(evt);
+            return fsm.template get<Guard>()(evt);
         }
 
         template <class EVT,class FSM,class SourceState,class TargetState,class AllStates>
-        static bool guard_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt, AllStates&, typename boost::disable_if<boost::is_base_of<Guard, typename FSM::actions> >::type* = 0)
+        static bool guard_call(FSM& fsm,EVT const& evt,SourceState& src,TargetState& tgt, AllStates&, typename boost::disable_if<is_base_of_<Guard, typename FSM::actions, typename FSM::DIPolicy> >::type* = 0)
         {
             // create functor, call it
             return Guard()(evt,fsm,src,tgt);
@@ -368,13 +368,13 @@ namespace boost { namespace msm { namespace front
             { }
 
             template <class FCT>
-            void operator()(::boost::msm::wrap<FCT> const&, typename boost::enable_if<boost::is_base_of<FCT, typename FSM::actions> >::type* = 0)
+            void operator()(::boost::msm::wrap<FCT> const&, typename boost::enable_if<is_base_of_<FCT, typename FSM::actions, typename FSM::DIPolicy> >::type* = 0)
             {
-                fsm_.m_actions.template get<FCT>()(evt_);
+                fsm_.template get<FCT>()(evt_);
             }
 
             template <class FCT>
-            void operator()(::boost::msm::wrap<FCT> const&, typename boost::disable_if<boost::is_base_of<FCT, typename FSM::actions> >::type* = 0)
+            void operator()(::boost::msm::wrap<FCT> const&, typename boost::disable_if<is_base_of_<FCT, typename FSM::actions, typename FSM::DIPolicy> >::type* = 0)
             {
                 FCT()(evt_,fsm_,src_,tgt_);
             }

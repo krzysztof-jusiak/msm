@@ -70,6 +70,7 @@
 #include <boost/mpl/back_inserter.hpp>
 #define BOOST_DI_CFG_INJECT_VA_ARGS
 #include <boost/di/inject.hpp>
+#include "boost/msm/test/fake.hpp"
 #include "pool.hpp"
 
 BOOST_MPL_HAS_XXX_TRAIT_DEF(accept_sig)
@@ -195,7 +196,7 @@ public:
 
     struct NoDIPolicy { };
     typedef typename ::boost::parameter::binding<
-        state_machine_args, ::boost::msm::back::tag::di_policy, NoDIPolicy >::type              DIPolicy;
+        state_machine_args, ::boost::msm::back::tag::di_policy, NoDIPolicy >::type                  DIPolicy;
 
 private:
 
@@ -1312,10 +1313,25 @@ private:
 
     typedef rec_actions<typename actions_t<stt>::type> all_actions_t;
 
+    template<typename T>
+    struct add_fake
+    {
+        typedef test::fake<T> type;
+    };
+
+    template<typename Sequence>
+    struct add_fakes
+        : mpl::transform<Sequence, add_fake<mpl::_> >::type
+    { };
+
     typedef typename mpl::if_<
         is_same<DIPolicy, use_dependency_injection>
       , pool<typename all_actions_t::type>
-      , pool<>
+      , typename mpl::if_<
+            is_same<DIPolicy, use_dependency_injection_for_test>
+          , pool<typename add_fakes<typename all_actions_t::type>::type>
+          , pool<>
+        >::type
     >::type actions;
 
     // extends the transition table with rows from composite states
@@ -1487,6 +1503,17 @@ private:
     const int* current_state() const
     {
         return this->m_states;
+    }
+
+    template<typename TState>
+    int get_state() const
+    {
+        return get_state_id<stt,TState>::type::value;
+    }
+
+    int get_current_state() const
+    {
+        return *current_state();
     }
 
     template <class Archive>
@@ -1677,6 +1704,28 @@ private:
         post_deferred_event(f);
     }
 
+     template<typename T, typename>
+     struct get_impl
+     {
+         typedef T result_type;
+
+         template<typename FSM>
+         static result_type& get(FSM& fsm) {
+            return fsm.m_actions.template get<result_type>();
+         }
+     };
+
+     template<typename T>
+     struct get_impl<T, use_dependency_injection_for_test>
+     {
+         typedef test::fake<T> result_type;
+
+         template<typename FSM>
+         static result_type& get(FSM& fsm) {
+            return fsm.m_actions.template get<result_type>();
+         }
+     };
+
  protected:    // interface for the derived class
 
      // helper used to fill the initial states
@@ -1709,6 +1758,12 @@ private:
      {
          ::boost::fusion::for_each(
              ::boost::fusion::as_vector(FoldToList()(expr, boost::fusion::nil())),update_state(this->m_substate_list));
+     }
+
+     template<typename T>
+     typename get_impl<T, DIPolicy>::result_type& get()
+     {
+         return get_impl<T, DIPolicy>::template get(*this);
      }
 
      // Construct with the default initial states

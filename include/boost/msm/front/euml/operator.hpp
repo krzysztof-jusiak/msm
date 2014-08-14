@@ -47,32 +47,32 @@ struct And_ : euml_action<And_<T1,T2> >
 
     template <class EVT,class FSM,class SourceState,class TargetState>
     bool operator()(EVT const& evt, FSM& fsm,SourceState&,TargetState&,
-            typename boost::enable_if<boost::is_base_of<T1, typename FSM::actions> >::type* = 0,
-            typename boost::enable_if<boost::is_base_of<T2, typename FSM::actions> >::type* = 0)
+            typename boost::enable_if<is_base_of_<T1, typename FSM::actions, typename FSM::DIPolicy> >::type* = 0,
+            typename boost::enable_if<is_base_of_<T2, typename FSM::actions, typename FSM::DIPolicy> >::type* = 0)
     {
-        return fsm.m_actions.template get<T1>()(evt) && fsm.m_actions.template get<T2>()(evt);
+        return fsm.template get<T1>()(evt) && fsm.template get<T2>()(evt);
     }
 
     template <class EVT,class FSM,class SourceState,class TargetState>
     bool operator()(EVT const& evt, FSM& fsm,SourceState& src,TargetState& tgt,
-            typename boost::enable_if<boost::is_base_of<T1, typename FSM::actions> >::type* = 0,
-            typename boost::disable_if<boost::is_base_of<T2, typename FSM::actions> >::type* = 0)
+            typename boost::enable_if<is_base_of_<T1, typename FSM::actions, typename FSM::DIPolicy> >::type* = 0,
+            typename boost::disable_if<is_base_of_<T2, typename FSM::actions, typename FSM::DIPolicy> >::type* = 0)
     {
-        return fsm.m_actions.template get<T1>()(evt) && T2()(evt,fsm,src,tgt);
+        return fsm.template get<T1>()(evt) && T2()(evt,fsm,src,tgt);
     }
 
     template <class EVT,class FSM,class SourceState,class TargetState>
     bool operator()(EVT const& evt, FSM& fsm,SourceState& src,TargetState& tgt,
-            typename boost::disable_if<boost::is_base_of<T1, typename FSM::actions> >::type* = 0,
-            typename boost::enable_if<boost::is_base_of<T2, typename FSM::actions> >::type* = 0)
+            typename boost::disable_if<is_base_of_<T1, typename FSM::actions, typename FSM::DIPolicy> >::type* = 0,
+            typename boost::enable_if<is_base_of_<T2, typename FSM::actions, typename FSM::DIPolicy> >::type* = 0)
     {
-        return T1()(evt,fsm,src,tgt) && fsm.m_actions.template get<T2>()(evt);
+        return T1()(evt,fsm,src,tgt) && fsm.template get<T2>()(evt);
     }
 
     template <class EVT,class FSM,class SourceState,class TargetState>
     bool operator()(EVT const& evt, FSM& fsm,SourceState& src,TargetState& tgt,
-            typename boost::disable_if<boost::is_base_of<T1, typename FSM::actions> >::type* = 0,
-            typename boost::disable_if<boost::is_base_of<T2, typename FSM::actions> >::type* = 0)
+            typename boost::disable_if<is_base_of_<T1, typename FSM::actions, typename FSM::DIPolicy> >::type* = 0,
+            typename boost::disable_if<is_base_of_<T2, typename FSM::actions, typename FSM::DIPolicy> >::type* = 0)
     {
         return (T1()(evt,fsm,src,tgt) && T2()(evt,fsm,src,tgt));
     }
@@ -91,14 +91,14 @@ struct Not_ : euml_action<Not_<T1> >
 
     template <class EVT,class FSM,class SourceState,class TargetState>
     bool operator()(EVT const& evt, FSM& fsm,SourceState&,TargetState&,
-        typename boost::enable_if<boost::is_base_of<T1, typename FSM::actions> >::type* = 0)
+        typename boost::enable_if<is_base_of_<T1, typename FSM::actions, typename FSM::DIPolicy> >::type* = 0)
     {
-        return !fsm.m_actions.template get<T1>()(evt);
+        return !fsm.template get<T1>()(evt);
     }
 
     template <class EVT,class FSM,class SourceState,class TargetState>
     bool operator()(EVT const& evt, FSM& fsm,SourceState& src,TargetState& tgt,
-        typename boost::disable_if<boost::is_base_of<T1, typename FSM::actions> >::type* = 0)
+        typename boost::disable_if<is_base_of_<T1, typename FSM::actions, typename FSM::DIPolicy> >::type* = 0)
     {
         return !(T1()(evt,fsm,src,tgt));
     }
