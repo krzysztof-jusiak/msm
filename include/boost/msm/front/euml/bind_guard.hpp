@@ -7,8 +7,7 @@
 #include <boost/mpl/at.hpp>
 #include <boost/mpl/placeholders.hpp>
 #include <boost/msm/front/euml/common.hpp>
-#define BOOST_DI_CFG_INJECT_VA_ARGS
-#include <boost/di/inject.hpp>
+#include <boost/di.hpp>
 
 #define euml_call(func) BOOST_TYPEOF(func), func
 

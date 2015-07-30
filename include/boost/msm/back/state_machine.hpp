@@ -68,8 +68,7 @@
 #include <boost/mpl/copy.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/back_inserter.hpp>
-#define BOOST_DI_CFG_INJECT_VA_ARGS
-#include <boost/di/inject.hpp>
+#include <boost/di.hpp>
 #include "pool.hpp"
 
 BOOST_MPL_HAS_XXX_TRAIT_DEF(accept_sig)
