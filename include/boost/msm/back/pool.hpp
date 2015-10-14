@@ -122,7 +122,7 @@
         pool() { }
 
         #define BOOST_DI_INJECT_INITLIST_IMPL(_, n, na)                         \
-            BOOST_PP_COMMA_IF(n) Args##n::element_type(args##n)
+            BOOST_PP_COMMA_IF(n) Args##n::value_type(args##n)
 
         #define BOOST_PP_LOCAL_MACRO(n)                                         \
             template<BOOST_PP_ENUM_PARAMS(n, typename Args)>                    \
@@ -145,10 +145,10 @@
                 >()                                                             \
             )
 
-        #define BOOST_DI_INJECT_TRAITS_IMPL__(_, n, TSeq)                             \
-            BOOST_PP_COMMA_IF(n) typename mpl::at_c<TSeq, n>::type p##n
+        #define BOOST_DI_INJECT_TRAITS_IMPL__(_, n, TSeq)                       \
+            BOOST_PP_COMMA_IF(n) typename mpl::at_c<TSeq, n>::type
 
-        BOOST_DI_INJECT_TRAITS_NO_LIMITS(BOOST_PP_REPEAT(n, BOOST_DI_INJECT_TRAITS_IMPL__, TSeq));
+        using boost_di_inject__ = boost::di::inject<BOOST_PP_REPEAT(n, BOOST_DI_INJECT_TRAITS_IMPL__, TSeq)>;
 
         template<typename T, typename I>
         explicit pool(
